@@ -24,16 +24,48 @@ export default function MaterialsPage() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const load = async () => {
-      const [{ data: subj }, { data: mats }] = await Promise.all([
-        supabase.from('subjects').select('*').eq('id', subjectId!).single(),
-        supabase.from('materials').select('*').eq('subject_id', subjectId!),
-      ]);
-      setSubject(subj);
-      setMaterials(mats || []);
-      setLoading(false);
+    const loadData = async () => {
+      if (!subjectId) return;
+      console.log('Loading materials for subject:', subjectId);
+      setLoading(true);
+      let timeoutId: NodeJS.Timeout;
+      try {
+        timeoutId = setTimeout(() => {
+          console.log('Materials fetch timeout');
+          setLoading(false);
+        }, 5000);
+
+        const [subjRes, matsRes] = await Promise.all([
+          supabase.from('subjects').select('*').eq('id', subjectId).single(),
+          supabase.from('materials').select('*').eq('subject_id', subjectId),
+        ]);
+
+        if (subjRes.error) {
+          console.error('Error fetching subject:', subjRes.error);
+          setSubject(null);
+        } else {
+          console.log('Subject fetched:', subjRes.data);
+          setSubject(subjRes.data);
+        }
+
+        if (matsRes.error) {
+          console.error('Error fetching materials:', matsRes.error);
+          setMaterials([]);
+        } else {
+          console.log('Materials fetched:', matsRes.data);
+          setMaterials(matsRes.data || []);
+        }
+      } catch (error) {
+        console.error('Exception loading data:', error);
+        setSubject(null);
+        setMaterials([]);
+      } finally {
+        setLoading(false);
+        if (timeoutId) clearTimeout(timeoutId);
+      }
     };
-    if (subjectId) load();
+
+    loadData();
   }, [subjectId]);
 
   if (loading) {

@@ -27,10 +27,34 @@ export default function SubjectsPage() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    supabase.from('subjects').select('*').then(({ data }) => {
-      setSubjects(data || []);
-      setLoading(false);
-    });
+    const fetchSubjects = async () => {
+      console.log('Fetching subjects');
+      setLoading(true);
+      let timeoutId: NodeJS.Timeout;
+      try {
+        timeoutId = setTimeout(() => {
+          console.log('Subjects fetch timeout');
+          setLoading(false);
+        }, 5000);
+
+        const { data, error } = await supabase.from('subjects').select('*');
+        if (error) {
+          console.error('Error fetching subjects:', error);
+          setSubjects([]);
+          return;
+        }
+        console.log('Subjects fetched:', data);
+        setSubjects(data || []);
+      } catch (error) {
+        console.error('Exception fetching subjects:', error);
+        setSubjects([]);
+      } finally {
+        setLoading(false);
+        if (timeoutId) clearTimeout(timeoutId);
+      }
+    };
+
+    fetchSubjects();
   }, []);
 
   if (loading) {
@@ -41,7 +65,7 @@ export default function SubjectsPage() {
     );
   }
 
-  if (subjects.length === 0) {
+  if (!subjects || subjects.length === 0) {
     return (
       <div className="animate-fade-in flex flex-col items-center justify-center py-16 text-center text-muted-foreground">
         <div className="text-5xl mb-4 opacity-50">📚</div>

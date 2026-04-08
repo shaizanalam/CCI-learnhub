@@ -15,26 +15,32 @@ export default function LoginPage() {
     e.preventDefault();
     setLoading(true);
     
-    if (isSignUp) {
-      const { error } = await signUp(email, password, name);
-      if (error) {
-        toast.error(error);
+    try {
+      if (isSignUp) {
+        const { error } = await signUp(email, password, name);
+        if (error) {
+          toast.error(error);
+        } else {
+          toast.success('Account created! Please wait for admin approval before logging in.');
+          setIsSignUp(false);
+          setName('');
+          setEmail('');
+          setPassword('');
+        }
       } else {
-        toast.success('Account created! Please wait for admin approval before logging in.');
-        setIsSignUp(false);
-        setName('');
-        setEmail('');
-        setPassword('');
+        const { error, needsApproval } = await signIn(email, password);
+        if (needsApproval) {
+          toast.error('Your account is pending admin approval. Please wait.');
+        } else if (error) {
+          toast.error(error);
+        }
       }
-    } else {
-      const { error, needsApproval } = await signIn(email, password);
-      if (needsApproval) {
-        toast.error('Your account is pending admin approval. Please wait.');
-      } else if (error) {
-        toast.error(error);
-      }
+    } catch (error) {
+      console.error('Login error:', error);
+      toast.error('An unexpected error occurred.');
+    } finally {
+      setLoading(false);
     }
-    setLoading(false);
   };
 
   return (
