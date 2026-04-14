@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from 'react';
-import { Send } from 'lucide-react';
+import { Send, Bot, User, Mic, Camera, Sparkles } from 'lucide-react';
 import { useAuth } from '@/hooks/useAuth';
 import Groq from "groq-sdk";
 // 1. Import Markdown library
@@ -28,7 +28,7 @@ const suggestions = [
 export default function ChatPage() {
   const { profile } = useAuth();
   const [messages, setMessages] = useState<Message[]>([
-    { id: 1, role: 'ai', text: `Hi ${profile?.name?.split(' ')[0] || 'there'}! 👋 I'm your CCI AI Assistant. Ask me any Class 10 or NEET doubt!`, time: '10:00 AM' },
+    { id: 1, role: 'ai', text: `Hi ${profile?.name?.split(' ')[0] || 'there'}! I'm your CCI AI Assistant. Ask me any Class 10 doubt!`, time: '10:00 AM' },
   ]);
   const [input, setInput] = useState('');
   const [typing, setTyping] = useState(false);
@@ -84,46 +84,80 @@ export default function ChatPage() {
   };
 
   return (
-    <div className="animate-fade-in">
+    <div className="animate-fade-in min-h-screen bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50">
       {/* CSS injection for Markdown styling */}
       <style>{`
         .prose-custom h1, .prose-custom h2, .prose-custom h3 { 
-          font-weight: 700; color: #a855f7; margin-top: 12px; margin-bottom: 6px; font-size: 16px;
+          font-weight: 700; color: #9333ea; margin-top: 12px; margin-bottom: 6px; font-size: 16px;
         }
-        .prose-custom p { margin-bottom: 10px; line-height: 1.6; }
+        .prose-custom p { margin-bottom: 10px; line-height: 1.6; color: #374151; }
         .prose-custom ul, .prose-custom ol { margin-left: 20px; margin-bottom: 10px; list-style-position: outside; }
         .prose-custom li { margin-bottom: 6px; }
-        .prose-custom strong { color: #facc15; } /* Yellow bold for emphasis */
-        .prose-custom code { background: #334155; padding: 2px 4px; rounded: 4px; font-family: monospace; }
+        .prose-custom strong { color: #9333ea; font-weight: 600; }
+        .prose-custom code { background: #f3f4f6; padding: 2px 6px; border-radius: 6px; font-family: monospace; color: #9333ea; }
       `}</style>
 
-      <div className="mb-5">
-        <h1 className="font-syne text-[26px] font-extrabold tracking-tight mb-1 text-white">AI Doubt Solver 🤖</h1>
-        <p className="text-muted-foreground text-sm">Organized study help for CCI students.</p>
+      {/* Header */}
+      <div className="mb-6">
+        <h1 className="text-xl sm:text-2xl font-bold text-gray-900 mb-2">AI Doubt Solver 🤖</h1>
+        <p className="text-sm text-gray-600">Get instant answers to your study questions.</p>
       </div>
 
-      <div className="bg-card border border-border rounded-2xl overflow-hidden flex flex-col" style={{ height: 'calc(100vh - 220px)', maxHeight: '700px' }}>
-        {/* Header */}
-        <div className="p-4 px-5 border-b border-border flex items-center gap-3 bg-[#1e2235]">
-          <div className="w-[38px] h-[38px] bg-gradient-to-br from-[#a855f7] to-[#22c55e] rounded-full flex items-center justify-center text-lg">🤖</div>
-          <div>
-            <div className="font-bold text-[15px] text-white">CCI AI Tutor</div>
-            <div className="text-xs text-[#22c55e] flex items-center gap-1.5"><span className="w-2 h-2 bg-[#22c55e] rounded-full animate-pulse" />Online</div>
+      {/* Chat Container */}
+      <div className="bg-white/70 backdrop-blur-lg border border-white/20 rounded-2xl sm:rounded-3xl shadow-lg overflow-hidden" style={{ height: 'calc(100vh - 200px)', maxHeight: '700px' }}>
+        {/* Chat Header */}
+        <div className="bg-gradient-to-r from-purple-500 to-pink-500 p-4 sm:p-6">
+          <div className="flex items-center gap-3 sm:gap-4">
+            <div className="w-10 h-10 sm:w-12 sm:h-12 bg-white/20 backdrop-blur-lg rounded-xl sm:rounded-2xl flex items-center justify-center">
+              <Bot className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
+            </div>
+            <div className="flex-1">
+              <h3 className="text-base sm:text-lg font-semibold text-white">CCI AI Tutor</h3>
+              <div className="flex items-center gap-2">
+                <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
+                <span className="text-xs sm:text-sm text-white/90">Online - Ready to help!</span>
+              </div>
+            </div>
+            <div className="w-8 h-8 sm:w-10 sm:h-10 bg-white/20 backdrop-blur-lg rounded-xl sm:rounded-2xl flex items-center justify-center">
+              <Sparkles className="w-4 h-4 sm:w-5 sm:h-5 text-white" />
+            </div>
           </div>
         </div>
 
+        {/* Suggestions */}
+        {messages.length === 1 && (
+          <div className="p-3 sm:p-4 border-b border-gray-100">
+            <p className="text-xs sm:text-sm font-medium text-gray-700 mb-3">Try asking:</p>
+            <div className="flex flex-wrap gap-2">
+              {suggestions.map((suggestion, index) => (
+                <button
+                  key={index}
+                  onClick={() => setInput(suggestion)}
+                  className="px-2 py-1 sm:px-3 sm:py-2 bg-purple-100 text-purple-700 rounded-full text-xs sm:text-sm font-medium hover:bg-purple-200 transition-colors"
+                >
+                  {suggestion}
+                </button>
+              ))}
+            </div>
+          </div>
+        )}
+
         {/* Messages */}
-        <div className="flex-1 overflow-y-auto p-5 flex flex-col gap-4 bg-[#0f172a]">
+        <div className="flex-1 overflow-y-auto p-3 sm:p-6 space-y-3 sm:space-y-4 bg-gray-50">
           {messages.map(msg => (
             <div key={msg.id} className={`flex gap-3 animate-msg-in ${msg.role === 'user' ? 'flex-row-reverse' : ''}`}>
-              <div className={`w-[32px] h-[32px] rounded-full flex items-center justify-center text-[13px] flex-shrink-0 mt-1 ${
-                msg.role === 'ai' ? 'bg-gradient-to-br from-[#a855f7] to-[#22c55e]' : 'bg-gradient-to-br from-[#f59e0b] to-[#f43f5e] text-white font-bold'
+              <div className={`w-8 h-8 sm:w-10 sm:h-10 rounded-xl sm:rounded-2xl flex items-center justify-center flex-shrink-0 ${
+                msg.role === 'ai' 
+                  ? 'bg-gradient-to-br from-purple-500 to-pink-500' 
+                  : 'bg-gradient-to-br from-blue-500 to-purple-500 text-white font-bold'
               }`}>
-                {msg.role === 'ai' ? '🤖' : (profile?.name?.[0]?.toUpperCase() || 'U')}
+                {msg.role === 'ai' ? <Bot className="w-5 h-5 text-white" /> : <User className="w-5 h-5 text-white" />}
               </div>
               <div className={`flex flex-col ${msg.role === 'user' ? 'items-end max-w-[80%]' : 'items-start max-w-[90%]'}`}>
-                <div className={`px-4 py-3 rounded-2xl text-[14px] shadow-sm ${
-                  msg.role === 'ai' ? 'bg-[#1e293b] text-gray-100 rounded-tl-none border border-slate-700' : 'bg-[#a855f7] text-white rounded-tr-none'
+                <div className={`px-3 py-2 sm:px-4 sm:py-3 rounded-xl sm:rounded-2xl text-xs sm:text-sm shadow-md ${
+                  msg.role === 'ai' 
+                    ? 'bg-white border border-gray-200 text-gray-800 rounded-tl-none' 
+                    : 'bg-gradient-to-r from-purple-500 to-pink-500 text-white rounded-tr-none'
                 }`}>
                   {/* Markdown Rendering for AI Responses */}
                   {msg.role === 'ai' ? (
@@ -134,39 +168,53 @@ export default function ChatPage() {
                     msg.text
                   )}
                 </div>
-                <span className="text-[10px] text-slate-500 mt-1">{msg.time}</span>
+                <span className="text-xs sm:text-sm text-gray-500 mt-1">{msg.time}</span>
               </div>
             </div>
           ))}
           {typing && (
             <div className="flex gap-3 animate-msg-in">
-              <div className="w-[32px] h-[32px] rounded-full bg-gradient-to-br from-[#a855f7] to-[#22c55e] flex items-center justify-center text-lg">🤖</div>
-              <div className="p-4 bg-[#1e293b] rounded-2xl rounded-tl-none border border-slate-700 flex gap-1">
-                <div className="w-1.5 h-1.5 bg-slate-400 rounded-full animate-bounce" />
-                <div className="w-1.5 h-1.5 bg-slate-400 rounded-full animate-bounce [animation-delay:0.2s]" />
-                <div className="w-1.5 h-1.5 bg-slate-400 rounded-full animate-bounce [animation-delay:0.4s]" />
+              <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-xl sm:rounded-2xl bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center">
+                <Bot className="w-5 h-5 text-white" />
+              </div>
+              <div className="bg-white border border-gray-200 rounded-xl sm:rounded-2xl px-3 py-2 sm:px-4 sm:py-3 shadow-md">
+                <div className="flex gap-1">
+                  <div className="w-2 h-2 bg-purple-400 rounded-full animate-bounce" />
+                  <div className="w-2 h-2 bg-purple-400 rounded-full animate-bounce [animation-delay:0.2s]" />
+                  <div className="w-2 h-2 bg-purple-400 rounded-full animate-bounce [animation-delay:0.4s]" />
+                </div>
               </div>
             </div>
           )}
           <div ref={messagesEnd} />
         </div>
 
-        {/* Input area */}
-        <div className="p-4 bg-[#1e2235] border-t border-slate-800 flex gap-3">
-          <input
-            value={input}
-            onChange={e => setInput(e.target.value)}
-            onKeyDown={e => e.key === 'Enter' && sendMessage(input)}
-            placeholder="Type your study doubt..."
-            className="flex-1 bg-[#0f172a] border border-slate-700 rounded-xl py-3 px-4 text-white text-sm focus:border-[#a855f7] outline-none"
-          />
-          <button
-            onClick={() => sendMessage(input)}
-            disabled={typing || !input.trim()}
-            className="w-12 h-12 bg-gradient-to-br from-[#a855f7] to-[#7c3aed] rounded-xl flex items-center justify-center text-white disabled:opacity-40 transition-all"
-          >
-            <Send className="w-5 h-5" />
-          </button>
+        {/* Input Area */}
+        <div className="p-3 sm:p-4 bg-white border-t border-gray-200">
+          <div className="flex items-center gap-2 sm:gap-3">
+            <button className="w-8 h-8 sm:w-10 sm:h-10 bg-gray-100 rounded-xl sm:rounded-2xl flex items-center justify-center text-gray-600 hover:bg-gray-200 transition-colors">
+              <Camera className="w-4 h-4 sm:w-5 sm:h-5" />
+            </button>
+            <div className="flex-1 relative">
+              <input
+                value={input}
+                onChange={e => setInput(e.target.value)}
+                onKeyDown={e => e.key === 'Enter' && sendMessage(input)}
+                placeholder="Type your study doubt..."
+                className="w-full bg-gray-100 border border-gray-200 rounded-xl sm:rounded-2xl py-2 px-3 sm:py-3 sm:px-4 text-gray-900 text-xs sm:text-sm focus:border-purple-500 focus:outline-none focus:ring-2 focus:ring-purple-200 placeholder-gray-500"
+              />
+            </div>
+            <button className="w-8 h-8 sm:w-10 sm:h-10 bg-gray-100 rounded-xl sm:rounded-2xl flex items-center justify-center text-gray-600 hover:bg-gray-200 transition-colors">
+              <Mic className="w-4 h-4 sm:w-5 sm:h-5" />
+            </button>
+            <button
+              onClick={() => sendMessage(input)}
+              disabled={typing || !input.trim()}
+              className="w-10 h-10 sm:w-12 sm:h-12 bg-gradient-to-r from-purple-500 to-pink-500 rounded-xl sm:rounded-2xl flex items-center justify-center text-white disabled:opacity-40 transition-all hover:shadow-lg disabled:hover:shadow-none"
+            >
+              <Send className="w-4 h-4 sm:w-5 sm:h-5" />
+            </button>
+          </div>
         </div>
       </div>
     </div>

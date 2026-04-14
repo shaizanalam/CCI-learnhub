@@ -215,7 +215,7 @@ export default function AdminPage() {
       </div>
 
       {/* File Upload */}
-      <div className="bg-card border border-border rounded-2xl p-6 mb-5">
+      <div className="bg-[#9ED3DC]/20 backdrop-blur-lg border border-white/20 rounded-2xl p-6 mb-5">
         <h3 className="font-syne text-[17px] font-bold mb-4 pb-3.5 border-b border-border flex items-center gap-2.5">
           📁 Upload Study Material
         </h3>
@@ -272,7 +272,7 @@ export default function AdminPage() {
 
       {/* Uploaded Materials */}
       {materials.length > 0 && (
-        <div className="bg-card border border-border rounded-2xl p-6 mb-5">
+        <div className="bg-[#9ED3DC]/20 backdrop-blur-lg border border-white/20 rounded-2xl p-6 mb-5">
           <h3 className="font-syne text-[17px] font-bold mb-4 pb-3.5 border-b border-border flex items-center gap-2.5">
             📚 Uploaded Materials
           </h3>
@@ -302,19 +302,19 @@ export default function AdminPage() {
         </div>
       )}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6 stagger">
-        <div className="bg-card border border-border rounded-2xl p-5">
+        <div className="bg-[#9ED3DC]/30 backdrop-blur-lg border border-white/20 rounded-2xl p-5">
           <div className="text-xs text-muted-foreground font-medium mb-2">Total Students</div>
           <div className="font-syne text-[28px] font-extrabold tracking-tight text-cci-accent">{users.length}</div>
         </div>
-        <div className="bg-card border border-border rounded-2xl p-5">
+        <div className="bg-[#9ED3DC]/30 backdrop-blur-lg border border-white/20 rounded-2xl p-5">
           <div className="text-xs text-muted-foreground font-medium mb-2">Pending Approvals</div>
           <div className="font-syne text-[28px] font-extrabold tracking-tight text-cci-amber">{pending.length}</div>
         </div>
-        <div className="bg-card border border-border rounded-2xl p-5">
+        <div className="bg-[#9ED3DC]/30 backdrop-blur-lg border border-white/20 rounded-2xl p-5">
           <div className="text-xs text-muted-foreground font-medium mb-2">Approved</div>
           <div className="font-syne text-[28px] font-extrabold tracking-tight text-cci-green">{approved.length}</div>
         </div>
-        <div className="bg-card border border-border rounded-2xl p-5">
+        <div className="bg-[#9ED3DC]/30 backdrop-blur-lg border border-white/20 rounded-2xl p-5">
           <div className="text-xs text-muted-foreground font-medium mb-2">Admin</div>
           <div className="font-syne text-[28px] font-extrabold tracking-tight text-cci-cyan">{users.filter(u => u.role === 'admin').length}</div>
         </div>
@@ -322,7 +322,7 @@ export default function AdminPage() {
 
       {/* Pending */}
       {pending.length > 0 && (
-        <div className="bg-card border border-border rounded-2xl p-6 mb-5">
+        <div className="bg-[#9ED3DC]/20 backdrop-blur-lg border border-white/20 rounded-2xl p-6 mb-5">
           <h3 className="font-syne text-[17px] font-bold mb-4 pb-3.5 border-b border-border flex items-center gap-2.5">
             ⏳ Pending Approvals
           </h3>
@@ -333,7 +333,7 @@ export default function AdminPage() {
       )}
 
       {/* All Users */}
-      <div className="bg-card border border-border rounded-2xl p-6">
+      <div className="bg-[#9ED3DC]/20 backdrop-blur-lg border border-white/20 rounded-2xl p-6">
         <h3 className="font-syne text-[17px] font-bold mb-4 pb-3.5 border-b border-border flex items-center gap-2.5">
           👥 All Users
         </h3>

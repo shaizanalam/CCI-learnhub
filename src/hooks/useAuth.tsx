@@ -15,8 +15,8 @@ interface AuthContextType {
   session: Session | null;
   profile: UserProfile | null;
   loading: boolean;
-  signUp: (email: string, password: string, name: string) => Promise<{ error: string | null }>;
-  signIn: (email: string, password: string) => Promise<{ error: string | null; needsApproval?: boolean }>;
+  signUp: (email: string, password: string, name: string) => Promise<{ error: string | null; needsVerification?: boolean }>;
+  signIn: (email: string, password: string) => Promise<{ error: string | null; needsApproval?: boolean; needsVerification?: boolean }>;
   signOut: () => Promise<void>;
 }
 
@@ -105,7 +105,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         console.error('Sign up error:', error);
         return { error: error.message };
       }
-      if (data.user) {
+      if (data.user && !data.session) {
+        // User created but email not verified
+        console.log('User created, email verification needed');
+        return { error: null, needsVerification: true };
+      }
+      if (data.user && data.session) {
         console.log('Inserting user profile');
         const { error: insertError } = await supabase.from('users').insert({
           id: data.user.id,
@@ -133,7 +138,15 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       const { data, error } = await supabase.auth.signInWithPassword({ email, password });
       if (error) {
         console.error('Sign in error:', error);
+        // Check if error is related to email verification
+        if (error.message.toLowerCase().includes('email') || error.message.toLowerCase().includes('verify')) {
+          return { error: 'Please check your email and verify your account before signing in.', needsVerification: true };
+        }
         return { error: error.message };
+      }
+      if (data.user && !data.user.email_confirmed_at) {
+        console.log('Email not confirmed');
+        return { error: 'Please check your email and verify your account before signing in.', needsVerification: true };
       }
       console.log('Sign in successful, user:', data.user?.id);
       // Profile will be fetched by the useEffect when user state updates
