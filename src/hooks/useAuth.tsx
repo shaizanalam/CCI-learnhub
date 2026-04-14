@@ -29,7 +29,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [loading, setLoading] = useState(true);
 
   const fetchProfile = async (userId: string) => {
-    console.log('Fetching profile for user:', userId);
     try {
       const { data, error } = await supabase
         .from('users')
@@ -37,13 +36,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         .eq('id', userId)
         .single();
       if (error) {
-        console.error('Error fetching profile:', error);
         return null;
       }
-      console.log('Profile fetched:', data);
       return data;
     } catch (error) {
-      console.error('Error fetching profile:', error);
       return null;
     }
   };
@@ -79,17 +75,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   // Separate effect for profile fetching, only when user changes
   useEffect(() => {
     if (user) {
-      console.log('User changed, fetching profile');
       fetchProfile(user.id).then((prof) => {
-        console.log('Profile loaded:', prof);
         setProfile(prof);
         // Check approval after profile is loaded
         if (prof && prof.approved === false) {
-          console.log('User not approved, signing out');
           supabase.auth.signOut();
         }
       }).catch((error) => {
-        console.error('Error loading profile:', error);
         setProfile(null);
       });
     } else {
@@ -98,20 +90,16 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }, [user]);
 
   const signUp = async (email: string, password: string, name: string) => {
-    console.log('Signing up:', email);
     try {
       const { data, error } = await supabase.auth.signUp({ email, password });
       if (error) {
-        console.error('Sign up error:', error);
         return { error: error.message };
       }
       if (data.user && !data.session) {
         // User created but email not verified
-        console.log('User created, email verification needed');
         return { error: null, needsVerification: true };
       }
       if (data.user && data.session) {
-        console.log('Inserting user profile');
         const { error: insertError } = await supabase.from('users').insert({
           id: data.user.id,
           name,
@@ -120,24 +108,19 @@ export function AuthProvider({ children }: { children: ReactNode }) {
           approved: false,
         });
         if (insertError) {
-          console.error('Insert error:', insertError);
           return { error: insertError.message };
         }
-        console.log('User profile inserted');
       }
       return { error: null };
     } catch (error) {
-      console.error('Sign up exception:', error);
       return { error: 'An unexpected error occurred during sign up.' };
     }
   };
 
   const signIn = async (email: string, password: string) => {
-    console.log('Signing in:', email);
     try {
       const { data, error } = await supabase.auth.signInWithPassword({ email, password });
       if (error) {
-        console.error('Sign in error:', error);
         // Check if error is related to email verification
         if (error.message.toLowerCase().includes('email') || error.message.toLowerCase().includes('verify')) {
           return { error: 'Please check your email and verify your account before signing in.', needsVerification: true };
@@ -145,27 +128,23 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         return { error: error.message };
       }
       if (data.user && !data.user.email_confirmed_at) {
-        console.log('Email not confirmed');
         return { error: 'Please check your email and verify your account before signing in.', needsVerification: true };
       }
-      console.log('Sign in successful, user:', data.user?.id);
       // Profile will be fetched by the useEffect when user state updates
       return { error: null };
     } catch (error) {
-      console.error('Sign in exception:', error);
       return { error: 'An unexpected error occurred during sign in.' };
     }
   };
 
   const signOut = async () => {
-    console.log('Signing out');
     try {
       await supabase.auth.signOut();
       setUser(null);
       setSession(null);
       setProfile(null);
     } catch (error) {
-      console.error('Sign out error:', error);
+      // Silent sign out error
     }
   };
 

@@ -9,29 +9,9 @@ interface Subject {
   class: string | null;
 }
 
-const subjectEmojis: Record<string, string> = {
-  physics: '⚛️', chemistry: '🧪', mathematics: '📐', math: '📐', biology: '🧬', english: '📖', hindi: '📝',
-};
-
-const subjectColors: Record<string, { gradient: string; bg: string }> = {
-  physics: { gradient: 'from-purple-400 to-purple-600', bg: 'from-purple-100 to-purple-200' },
-  chemistry: { gradient: 'from-green-400 to-green-600', bg: 'from-green-100 to-green-200' },
-  mathematics: { gradient: 'from-amber-400 to-amber-600', bg: 'from-amber-100 to-amber-200' },
-  math: { gradient: 'from-amber-400 to-amber-600', bg: 'from-amber-100 to-amber-200' },
-  biology: { gradient: 'from-pink-400 to-pink-600', bg: 'from-pink-100 to-pink-200' },
-  english: { gradient: 'from-blue-400 to-blue-600', bg: 'from-blue-100 to-blue-200' },
-  hindi: { gradient: 'from-orange-400 to-orange-600', bg: 'from-orange-100 to-orange-200' },
-};
-
-const subjectStats: Record<string, { chapters: number; videos: number; tests: number }> = {
-  physics: { chapters: 12, videos: 45, tests: 8 },
-  chemistry: { chapters: 10, videos: 38, tests: 6 },
-  mathematics: { chapters: 15, videos: 52, tests: 10 },
-  math: { chapters: 15, videos: 52, tests: 10 },
-  biology: { chapters: 8, videos: 28, tests: 5 },
-  english: { chapters: 6, videos: 20, tests: 3 },
-  hindi: { chapters: 6, videos: 18, tests: 3 },
-};
+const subjectEmojis: Record<string, string> = {};
+const subjectColors: Record<string, { gradient: string; bg: string }> = {};
+const subjectStats: Record<string, { chapters: number; videos: number; tests: number }> = {};
 
 export default function SubjectsPage() {
   const [subjects, setSubjects] = useState<Subject[]>([]);
@@ -40,25 +20,20 @@ export default function SubjectsPage() {
 
   useEffect(() => {
     const fetchSubjects = async () => {
-      console.log('Fetching subjects');
       setLoading(true);
       let timeoutId: NodeJS.Timeout;
       try {
         timeoutId = setTimeout(() => {
-          console.log('Subjects fetch timeout');
           setLoading(false);
         }, 5000);
 
         const { data, error } = await supabase.from('subjects').select('*');
         if (error) {
-          console.error('Error fetching subjects:', error);
           setSubjects([]);
           return;
         }
-        console.log('Subjects fetched:', data);
         setSubjects(data || []);
       } catch (error) {
-        console.error('Exception fetching subjects:', error);
         setSubjects([]);
       } finally {
         setLoading(false);
@@ -188,14 +163,14 @@ export default function SubjectsPage() {
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
           <div>
             <h3 className="text-base sm:text-lg font-bold text-gray-900 mb-2">Your Learning Progress</h3>
-            <p className="text-sm text-gray-700 mb-4">Great job! You're making steady progress.</p>
+            <p className="text-sm text-gray-700 mb-4">Start exploring subjects to track your progress</p>
             <div className="flex items-center gap-4 sm:gap-6">
               <div>
                 <p className="text-xl sm:text-2xl font-bold text-purple-600">{subjects.length}</p>
-                <p className="text-xs sm:text-sm text-gray-600">Active Subjects</p>
+                <p className="text-xs sm:text-sm text-gray-600">Available Subjects</p>
               </div>
               <div>
-                <p className="text-xl sm:text-2xl font-bold text-green-600">78%</p>
+                <p className="text-xl sm:text-2xl font-bold text-green-600">--%</p>
                 <p className="text-xs sm:text-sm text-gray-600">Avg. Progress</p>
               </div>
             </div>

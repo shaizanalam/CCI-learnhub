@@ -13,16 +13,8 @@ const quickActions = [
   { title: 'Study Break', icon: Coffee, color: 'from-indigo-400 to-indigo-600', path: '/break' },
 ];
 
-const recentVideos = [
-  { title: 'Physics: Motion in 1D', duration: '15:30', progress: 75 },
-  { title: 'Chemistry: Atomic Structure', duration: '12:45', progress: 45 },
-  { title: 'Biology: Cell Division', duration: '18:20', progress: 90 },
-];
-
-const upcomingTests = [
-  { title: 'Physics Mock Test', date: 'Tomorrow', duration: '180 min' },
-  { title: 'Chemistry Quiz', date: 'In 3 days', duration: '60 min' },
-];
+const recentVideos = [];
+const upcomingTests = [];
 
 const features = [
   { title: 'My Subjects', desc: 'Browse subjects and access chapter-wise notes, videos & practice sheets.', icon: '📚', color: 'purple', path: '/subjects' },
@@ -114,27 +106,37 @@ export default function DashboardPage() {
             <h3 className="text-lg font-semibold text-gray-900">Continue Learning</h3>
             <button className="text-sm text-purple-600 font-medium">View All</button>
           </div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">
-            {recentVideos.map((video, index) => (
-              <div key={index} className="bg-white/70 backdrop-blur-lg border border-white/20 rounded-xl p-3 sm:p-4 shadow-lg hover:shadow-xl transition-all duration-200">
-                <div className="flex items-center gap-3">
-                  <div className="w-12 h-12 sm:w-16 sm:h-16 bg-gradient-to-br from-blue-100 to-purple-100 rounded-xl sm:rounded-2xl flex items-center justify-center flex-shrink-0">
-                    <Play className="w-6 h-6 sm:w-8 sm:h-8 text-purple-600" />
-                  </div>
-                  <div className="flex-1 min-w-0">
-                    <h4 className="font-medium text-gray-900 text-xs sm:text-sm mb-1 truncate">{video.title}</h4>
-                    <p className="text-xs text-gray-500 mb-2">{video.duration}</p>
-                    <div className="w-full bg-gray-200 rounded-full h-1.5">
-                      <div 
-                        className="bg-gradient-to-r from-purple-500 to-pink-500 h-1.5 rounded-full"
-                        style={{ width: `${video.progress}%` }}
-                      ></div>
+          {recentVideos.length === 0 ? (
+            <div className="bg-white/70 backdrop-blur-lg border border-white/20 rounded-xl p-8 text-center">
+              <div className="w-16 h-16 bg-gray-100 rounded-2xl flex items-center justify-center mx-auto mb-4">
+                <Play className="w-8 h-8 text-gray-400" />
+              </div>
+              <h4 className="text-gray-900 font-medium mb-2">No recent videos</h4>
+              <p className="text-gray-500 text-sm">Start watching videos to see your progress here</p>
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">
+              {recentVideos.map((video, index) => (
+                <div key={index} className="bg-white/70 backdrop-blur-lg border border-white/20 rounded-xl p-3 sm:p-4 shadow-lg hover:shadow-xl transition-all duration-200">
+                  <div className="flex items-center gap-3">
+                    <div className="w-12 h-12 sm:w-16 sm:h-16 bg-gradient-to-br from-blue-100 to-purple-100 rounded-xl sm:rounded-2xl flex items-center justify-center flex-shrink-0">
+                      <Play className="w-6 h-6 sm:w-8 sm:h-8 text-purple-600" />
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <h4 className="font-medium text-gray-900 text-xs sm:text-sm mb-1 truncate">{video.title}</h4>
+                      <p className="text-xs text-gray-500 mb-2">{video.duration}</p>
+                      <div className="w-full bg-gray-200 rounded-full h-1.5">
+                        <div 
+                          className="bg-gradient-to-r from-purple-500 to-pink-500 h-1.5 rounded-full"
+                          style={{ width: `${video.progress}%` }}
+                        ></div>
+                      </div>
                     </div>
                   </div>
                 </div>
-              </div>
-            ))}
-          </div>
+              ))}
+            </div>
+          )}
         </div>
 
         {/* Upcoming Tests */}
@@ -143,35 +145,45 @@ export default function DashboardPage() {
             <h3 className="text-lg font-semibold text-gray-900">Upcoming Tests</h3>
             <button className="text-sm text-purple-600 font-medium">View All</button>
           </div>
-          <div className="space-y-3">
-            {upcomingTests.map((test, index) => (
-              <div key={index} className="bg-white/70 backdrop-blur-lg border border-white/20 rounded-xl p-3 sm:p-4 shadow-lg hover:shadow-xl transition-all duration-200">
-                <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
-                  <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 sm:w-12 sm:h-12 bg-gradient-to-br from-orange-100 to-red-100 rounded-xl sm:rounded-2xl flex items-center justify-center flex-shrink-0">
-                      <FileText className="w-5 h-5 sm:w-6 sm:h-6 text-orange-600" />
-                    </div>
-                    <div className="min-w-0">
-                      <h4 className="font-medium text-gray-900 text-sm sm:text-base truncate">{test.title}</h4>
-                      <div className="flex items-center gap-3 text-xs sm:text-sm text-gray-500">
-                        <span className="flex items-center gap-1">
-                          <Calendar className="w-3 h-3" />
-                          {test.date}
-                        </span>
-                        <span className="flex items-center gap-1">
-                          <Clock className="w-3 h-3" />
-                          {test.duration}
-                        </span>
+          {upcomingTests.length === 0 ? (
+            <div className="bg-white/70 backdrop-blur-lg border border-white/20 rounded-xl p-8 text-center">
+              <div className="w-16 h-16 bg-gray-100 rounded-2xl flex items-center justify-center mx-auto mb-4">
+                <FileText className="w-8 h-8 text-gray-400" />
+              </div>
+              <h4 className="text-gray-900 font-medium mb-2">No upcoming tests</h4>
+              <p className="text-gray-500 text-sm">Check back later for scheduled tests</p>
+            </div>
+          ) : (
+            <div className="space-y-3">
+              {upcomingTests.map((test, index) => (
+                <div key={index} className="bg-white/70 backdrop-blur-lg border border-white/20 rounded-xl p-3 sm:p-4 shadow-lg hover:shadow-xl transition-all duration-200">
+                  <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+                    <div className="flex items-center gap-3">
+                      <div className="w-10 h-10 sm:w-12 sm:h-12 bg-gradient-to-br from-orange-100 to-red-100 rounded-xl sm:rounded-2xl flex items-center justify-center flex-shrink-0">
+                        <FileText className="w-5 h-5 sm:w-6 sm:h-6 text-orange-600" />
+                      </div>
+                      <div className="min-w-0">
+                        <h4 className="font-medium text-gray-900 text-sm sm:text-base truncate">{test.title}</h4>
+                        <div className="flex items-center gap-3 text-xs sm:text-sm text-gray-500">
+                          <span className="flex items-center gap-1">
+                            <Calendar className="w-3 h-3" />
+                            {test.date}
+                          </span>
+                          <span className="flex items-center gap-1">
+                            <Clock className="w-3 h-3" />
+                            {test.duration}
+                          </span>
+                        </div>
                       </div>
                     </div>
+                    <button className="px-3 py-2 sm:px-4 sm:py-2 bg-gradient-to-r from-purple-500 to-pink-500 text-white rounded-full text-xs sm:text-sm font-medium hover:shadow-lg transition-all duration-200 whitespace-nowrap">
+                      Start Test
+                    </button>
                   </div>
-                  <button className="px-3 py-2 sm:px-4 sm:py-2 bg-gradient-to-r from-purple-500 to-pink-500 text-white rounded-full text-xs sm:text-sm font-medium hover:shadow-lg transition-all duration-200 whitespace-nowrap">
-                    Start Test
-                  </button>
                 </div>
-              </div>
-            ))}
-          </div>
+              ))}
+            </div>
+          )}
         </div>
 
         {/* Performance Card */}
@@ -179,14 +191,14 @@ export default function DashboardPage() {
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
             <div>
               <h3 className="text-lg sm:text-xl font-bold text-gray-900 mb-2">Your Performance</h3>
-              <p className="text-sm text-gray-700 mb-4">Great progress! Keep it up.</p>
+              <p className="text-sm text-gray-700 mb-4">Start learning to track your progress</p>
               <div className="flex items-center gap-4 sm:gap-6">
                 <div>
-                  <p className="text-xl sm:text-2xl font-bold text-green-600">78.6%</p>
+                  <p className="text-xl sm:text-2xl font-bold text-green-600">--%</p>
                   <p className="text-xs sm:text-sm text-gray-600">Average Score</p>
                 </div>
                 <div>
-                  <p className="text-xl sm:text-2xl font-bold text-blue-600">12</p>
+                  <p className="text-xl sm:text-2xl font-bold text-blue-600">0</p>
                   <p className="text-xs sm:text-sm text-gray-600">Tests Completed</p>
                 </div>
               </div>
