@@ -212,7 +212,7 @@ export default function ChatPage() {
         </div>
 
         {/* Full Screen Input Area */}
-        <div className="p-4 bg-white/90 backdrop-blur-lg border-t border-white/20">
+        <div className="p-4 bg-white/90 backdrop-blur-lg border-t border-white/20 relative z-50">
           <div className="flex items-center gap-3 max-w-4xl mx-auto">
             <div className="flex-1 relative">
               <input
