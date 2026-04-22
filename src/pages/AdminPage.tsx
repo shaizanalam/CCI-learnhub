@@ -215,29 +215,29 @@ export default function AdminPage() {
       </div>
 
       {/* File Upload */}
-      <div className="bg-[#9ED3DC]/20 backdrop-blur-lg border border-white/20 rounded-2xl p-6 mb-5">
-        <h3 className="font-syne text-[17px] font-bold mb-4 pb-3.5 border-b border-border flex items-center gap-2.5">
+      <div className="bg-[#9ED3DC]/20 backdrop-blur-lg border border-white/20 rounded-xl sm:rounded-2xl p-4 sm:p-6 mb-4 sm:mb-5">
+        <h3 className="font-syne text-[14px] sm:text-[17px] font-bold mb-3 sm:mb-4 pb-2.5 sm:pb-3.5 border-b border-border flex items-center gap-2">
           📁 Upload Study Material
         </h3>
-        <form onSubmit={handleFileUpload} className="space-y-4">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <form onSubmit={handleFileUpload} className="space-y-3 sm:space-y-4">
+          <div className="space-y-3 sm:grid sm:grid-cols-2 sm:gap-4">
             <div>
-              <label className="block text-sm font-medium mb-2">Title</label>
+              <label className="block text-xs sm:text-sm font-medium mb-1.5 sm:mb-2">Title</label>
               <input
                 type="text"
                 value={title}
                 onChange={(e) => setTitle(e.target.value)}
-                className="w-full px-3 py-2 border border-border rounded-lg bg-background"
+                className="w-full px-2.5 sm:px-3 py-2 sm:py-2.5 border border-border rounded-lg text-sm sm:text-base bg-background"
                 placeholder="Enter material title"
                 required
               />
             </div>
             <div>
-              <label className="block text-sm font-medium mb-2">Subject</label>
+              <label className="block text-xs sm:text-sm font-medium mb-1.5 sm:mb-2">Subject</label>
               <select
                 value={subjectId}
                 onChange={(e) => setSubjectId(e.target.value)}
-                className="w-full px-3 py-2 border border-border rounded-lg bg-background"
+                className="w-full px-2.5 sm:px-3 py-2 sm:py-2.5 border border-border rounded-lg text-sm sm:text-base bg-background"
                 required
               >
                 <option value="">Select a subject</option>
@@ -250,11 +250,11 @@ export default function AdminPage() {
             </div>
           </div>
           <div>
-            <label className="block text-sm font-medium mb-2">File</label>
+            <label className="block text-xs sm:text-sm font-medium mb-1.5 sm:mb-2">File</label>
             <input
               type="file"
               onChange={(e) => setFile(e.target.files?.[0] || null)}
-              className="w-full px-3 py-2 border border-border rounded-lg bg-background"
+              className="w-full px-2.5 sm:px-3 py-2 sm:py-2.5 border border-border rounded-lg text-sm sm:text-base bg-background"
               accept=".pdf,.doc,.docx,.ppt,.pptx,.txt"
               required
             />
@@ -262,7 +262,7 @@ export default function AdminPage() {
           <button
             type="submit"
             disabled={uploadLoading}
-            className="flex items-center gap-2 px-4 py-2 bg-cci-accent text-primary-foreground rounded-lg hover:bg-cci-accent/90 disabled:opacity-50"
+            className="w-full sm:w-auto flex items-center justify-center gap-2 px-3 sm:px-4 py-2.5 sm:py-3 bg-cci-accent text-primary-foreground rounded-lg hover:bg-cci-accent/90 disabled:opacity-50 text-sm sm:text-base"
           >
             {uploadLoading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Upload className="w-4 h-4" />}
             {uploadLoading ? 'Uploading...' : 'Upload Material'}
@@ -301,10 +301,10 @@ export default function AdminPage() {
           </div>
         </div>
       )}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6 stagger">
-        <div className="bg-[#9ED3DC]/30 backdrop-blur-lg border border-white/20 rounded-2xl p-5">
-          <div className="text-xs text-muted-foreground font-medium mb-2">Total Students</div>
-          <div className="font-syne text-[28px] font-extrabold tracking-tight text-cci-accent">{users.length}</div>
+      <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 mb-4 sm:mb-6 stagger">
+        <div className="bg-[#9ED3DC]/30 backdrop-blur-lg border border-white/20 rounded-xl p-3 sm:p-5">
+          <div className="text-[10px] sm:text-xs text-muted-foreground font-medium mb-1.5 sm:mb-2">Total Students</div>
+          <div className="font-syne text-[20px] sm:text-[28px] font-extrabold tracking-tight text-cci-accent">{users.length}</div>
         </div>
         <div className="bg-[#9ED3DC]/30 backdrop-blur-lg border border-white/20 rounded-2xl p-5">
           <div className="text-xs text-muted-foreground font-medium mb-2">Pending Approvals</div>
@@ -347,20 +347,20 @@ export default function AdminPage() {
 
 function UserRow({ user, onToggle }: { user: UserRow; onToggle: (u: UserRow) => void }) {
   return (
-    <div className="flex items-center gap-3.5 py-3.5 border-b border-border last:border-b-0">
-      <div className="w-[38px] h-[38px] rounded-full bg-gradient-to-br from-cci-accent to-cci-cyan flex items-center justify-center font-bold text-sm flex-shrink-0 text-primary-foreground">
+    <div className="flex items-center gap-2 sm:gap-3.5 py-2.5 sm:py-3.5 border-b border-border last:border-b-0">
+      <div className="w-[32px] h-[32px] sm:w-[38px] sm:h-[38px] rounded-full bg-gradient-to-br from-cci-accent to-cci-cyan flex items-center justify-center font-bold text-[11px] sm:text-sm flex-shrink-0 text-primary-foreground">
         {user.name?.[0]?.toUpperCase() || 'U'}
       </div>
       <div className="flex-1 min-w-0">
-        <div className="font-semibold text-sm truncate">{user.name || 'Unknown'}</div>
-        <div className="text-xs text-muted-foreground truncate">{user.email}</div>
+        <div className="font-semibold text-xs sm:text-sm truncate">{user.name || 'Unknown'}</div>
+        <div className="text-[10px] sm:text-xs text-muted-foreground truncate">{user.email}</div>
       </div>
-      <span className={`text-[11px] font-semibold px-2 py-0.5 rounded-full ${user.approved ? 'bg-cci-green/10 text-cci-green' : 'bg-cci-amber/[.12] text-cci-amber'}`}>
+      <span className={`text-[9px] sm:text-[11px] font-semibold px-1.5 sm:px-2 py-0.5 rounded-full ${user.approved ? 'bg-cci-green/10 text-cci-green' : 'bg-cci-amber/[.12] text-cci-amber'}`}>
         {user.approved ? 'Approved' : 'Pending'}
       </span>
       <button
         onClick={() => onToggle(user)}
-        className={`px-3.5 py-1.5 rounded-lg border text-xs font-semibold transition-all ${
+        className={`px-2.5 sm:px-3.5 py-1 sm:py-1.5 rounded-lg border text-[9px] sm:text-xs font-semibold transition-all ${
           user.approved
             ? 'border-border text-muted-foreground hover:border-cci-rose hover:text-cci-rose'
             : 'border-cci-green text-cci-green bg-cci-green/10 hover:bg-cci-green hover:text-background'

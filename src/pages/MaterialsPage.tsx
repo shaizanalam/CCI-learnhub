@@ -2,6 +2,9 @@ import { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
 import { FileText, ExternalLink, ChevronLeft, Loader2, Search, Download, Eye, Calendar, BookOpen } from 'lucide-react';
+import ProtectedPDFViewer from '@/components/ProtectedPDFViewer';
+import useScreenshotProtection from '@/hooks/useScreenshotProtection';
+import { useAuth } from '@/hooks/useAuth';
 
 interface Material {
   id: string;
@@ -19,13 +22,18 @@ interface Subject {
 export default function MaterialsPage() {
   const { subjectId } = useParams();
   const navigate = useNavigate();
+  const { profile } = useAuth();
   const [materials, setMaterials] = useState<Material[]>([]);
   const [subject, setSubject] = useState<Subject | null>(null);
   const [loading, setLoading] = useState(true);
+  const [selectedPDF, setSelectedPDF] = useState<{ url: string; title: string } | null>(null);
 
   useEffect(() => {
     const loadData = async () => {
-      if (!subjectId) return;
+      if (!subjectId) {
+        setLoading(false);
+        return;
+      }
       console.log('Loading materials for subject:', subjectId);
       setLoading(true);
       let timeoutId: NodeJS.Timeout;
@@ -147,7 +155,7 @@ export default function MaterialsPage() {
                 </div>
                 <div className="flex-1 min-w-0">
                   <h3 className="font-semibold text-gray-900 text-lg mb-1">{m.title || 'Untitled Material'}</h3>
-                  <div className="flex items-center gap-4 text-sm text-gray-500">
+                  <div className="flex items-center gap-2">
                     <span className="flex items-center gap-1">
                       <Calendar className="w-4 h-4" />
                       Recently added
@@ -157,24 +165,17 @@ export default function MaterialsPage() {
                       View online
                     </span>
                   </div>
-                </div>
-                <div className="flex items-center gap-2">
-                  {m.file_url && (
-                    <>
-                      <button className="p-3 bg-gray-100 rounded-2xl text-gray-600 hover:bg-gray-200 transition-colors">
-                        <Eye className="w-5 h-5" />
-                      </button>
-                      <a
-                        href={m.file_url}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="px-4 py-3 bg-gradient-to-r from-purple-500 to-pink-500 text-white rounded-2xl font-medium text-sm hover:shadow-lg transition-all duration-200 flex items-center gap-2"
+                  <div className="flex items-center gap-2">
+                    {m.file_url && (
+                      <button 
+                        onClick={() => setSelectedPDF({ url: m.file_url, title: m.title || 'Untitled Material' })}
+                        className="p-3 bg-gray-100 rounded-2xl text-gray-600 hover:bg-gray-200 transition-colors"
                       >
-                        <Download className="w-4 h-4" />
-                        Download
-                      </a>
-                    </>
-                  )}
+                        <Eye className="w-5 h-5" />
+                        View Protected Content
+                      </button>
+                    )}
+                  </div>
                 </div>
               </div>
             </div>
@@ -219,6 +220,15 @@ export default function MaterialsPage() {
             </div>
           </div>
         </div>
+      )}
+
+      {/* Protected PDF Viewer Modal */}
+      {selectedPDF && (
+        <ProtectedPDFViewer
+          pdfUrl={selectedPDF.url}
+          title={selectedPDF.title}
+          onClose={() => setSelectedPDF(null)}
+        />
       )}
     </div>
   );
