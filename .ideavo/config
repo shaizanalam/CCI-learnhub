@@ -1,0 +1,45 @@
+{
+  "systemSetup": [],
+  "templateName": "custom",
+  "projectDependencies": [
+    {
+      "name": "Install Dependencies",
+      "command": "bun install"
+    }
+  ],
+  "codeChecks": [
+    {
+      "name": "Run ESLint",
+      "command": "bun run lint"
+    },
+    {
+      "name": "Run TypeScript Check",
+      "command": "tsc --noEmit"
+    }
+  ],
+  "buildSteps": [
+    {
+      "name": "Build Project",
+      "command": "bun run build"
+    }
+  ],
+  "runStep": [
+    {
+      "name": "Run Dev Server",
+      "command": "bun run dev --host",
+      "port": "8080"
+    }
+  ],
+  "deploySteps": [],
+  "cleanupFiles": [
+    "node_modules",
+    "dist"
+  ],
+  "packageManager": "bun",
+  "envPaths": [
+    {
+      "name": "default",
+      "path": ".env"
+    }
+  ]
+}
